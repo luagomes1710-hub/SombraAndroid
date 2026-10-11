@@ -6,33 +6,23 @@ name: Build Sombra APK
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
     steps:
-      - name: Baixar projeto
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configurar Java 17
+      - name: Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Configurar Gradle 8.9
+      - name: Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
-      - name: Configurar Android SDK
+      - name: Android SDK
         uses: android-actions/setup-android@v3
-
-      - name: Instalar pacotes Android
-        run: |
-          sdkmanager --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
-
-      - name: Verificar arquivo do projeto
-        run: test -f SombraAndroid_GitHub.zip
 
       - name: Extrair projeto
         run: unzip SombraAndroid_GitHub.zip -d projeto
@@ -46,4 +36,3 @@ jobs:
         with:
           name: Sombra-APK
           path: projeto/app/build/outputs/apk/debug/*.apk
-          if-no-files-found: error
