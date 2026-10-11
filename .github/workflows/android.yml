@@ -1,29 +1,45 @@
-  - name: Configurar Java
-    uses: actions/setup-java@v4
-    with:
-      distribution: temurin
-      java-version: "17"
+name: Build Sombra APK
 
-  - name: Configurar Gradle
-    uses: gradle/actions/setup-gradle@v4
-    with:
-      gradle-version: "8.9"
+'on':
+  workflow_dispatch:
+  push:
+    paths:
+      - "SombraAndroid_GitHub.zip"
+      - ".github/workflows/android.yml"
 
-  - name: Configurar Android SDK
-    uses: android-actions/setup-android@v3
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
 
-  - name: Instalar SDK
-    run: sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
 
-  - name: Extrair projeto
-    run: unzip SombraAndroid_GitHub.zip -d projeto
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
 
-  - name: Compilar APK
-    working-directory: projeto
-    run: gradle assembleDebug
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v3
 
-  - name: Publicar APK
-    uses: actions/upload-artifact@v4
-    with:
-      name: Sombra-APK
-      path: projeto/app/build/outputs/apk/debug/*.apk
+      - name: Instalar SDK
+        run: sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Extrair projeto
+        run: unzip SombraAndroid_GitHub.zip -d projeto
+
+      - name: Compilar APK
+        working-directory: projeto
+        run: gradle assembleDebug
+
+      - name: Publicar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sombra-APK
+          path: projeto/app/build/outputs/apk/debug/*.apk
