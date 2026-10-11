@@ -35,4 +35,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Sombra-APK
-          path: projeto/app/build/outputs/apk/debug/*.apk
+          path: projeto/app/build/outputs/apk/debug/*. yml
