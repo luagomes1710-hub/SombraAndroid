@@ -1,38 +1,19 @@
-name: Build Sombra APK
-
-on:
-workflow_dispatch:
-push:
-paths:
-- "SombraAndroid_GitHub.zip"
-- ".github/workflows/android.yml"
-
-jobs:
-build:
-runs-on: ubuntu-latest
-
-steps:
-  - name: Baixar projeto
-    uses: actions/checkout@v4
-
   - name: Configurar Java
     uses: actions/setup-java@v4
     with:
       distribution: temurin
       java-version: "17"
 
-  - name: Preparar Gradle
+  - name: Configurar Gradle
     uses: gradle/actions/setup-gradle@v4
     with:
       gradle-version: "8.9"
 
-  - name: Instalar ferramentas Android
-    run: |
-      sudo apt-get update
-      sudo apt-get install -y unzip
-      mkdir -p "$ANDROID_HOME/cmdline-tools"
-      yes | sdkmanager --licenses || true
-      sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+  - name: Configurar Android SDK
+    uses: android-actions/setup-android@v3
+
+  - name: Instalar SDK
+    run: sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
   - name: Extrair projeto
     run: unzip SombraAndroid_GitHub.zip -d projeto
@@ -42,7 +23,6 @@ steps:
     run: gradle assembleDebug
 
   - name: Publicar APK
-    if: success()
     uses: actions/upload-artifact@v4
     with:
       name: Sombra-APK
